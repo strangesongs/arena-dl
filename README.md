@@ -20,6 +20,9 @@ A CLI tool for downloading images from [Are.na](https://are.na) channels.
 - Dry-run preview
 - Config file support
 - Failed download logging
+- Block type filtering (images, links, embeds, attachments, text)
+- Metadata archival with descriptions and sources
+- Handles 500+ item galleries with pagination
 
 ## Installation
 
@@ -140,6 +143,85 @@ arena-dl collection --format json
 arena-dl collection --format csv
 # Creates: downloads/collection/collection-list.csv
 ```
+
+## Block Type Filtering
+
+Filter downloads by content type:
+
+```bash
+# Images only (default)
+arena-dl gallery
+
+# Images and links
+arena-dl gallery --block-types image,link
+
+# All types (images, links, embeds, attachments, text)
+arena-dl gallery --block-types image,link,embed,attachment,text
+
+# Links only
+arena-dl gallery --block-types link
+```
+
+Supported types: `image`, `link`, `embed`, `attachment`, `text`
+
+## Metadata Archival
+
+Save metadata alongside downloads for research/preservation:
+
+```bash
+# Save descriptions and timestamps
+arena-dl research --include-metadata
+
+# Also track original source URLs
+arena-dl research --include-metadata --with-sources
+```
+
+Each downloaded file gets a `.json` metadata file:
+
+```json
+{
+  "id": 21652327,
+  "title": "Image title",
+  "description": "Research notes or captions",
+  "type": "Image",
+  "created_at": "2023-05-02T18:04:53.953Z",
+  "updated_at": "2025-10-07T18:54:22.752Z",
+  "source": {
+    "title": "Original source",
+    "url": "https://example.com"
+  },
+  "image_url": "https://d2w9rnfcy7mm78.cloudfront.net/...",
+  "content_type": "image/png"
+}
+```
+
+## Archival Workflow Example
+
+Complete research archival with all metadata:
+
+```bash
+# Download everything with full context
+arena-dl my-research \
+  --block-types image,link,embed,attachment,text \
+  --include-metadata \
+  --with-sources \
+  --format json
+
+# Result structure:
+# downloads/my-research/
+# ├── 12345_title.jpg
+# ├── 12345_title.json          (metadata)
+# ├── 67890_another.png
+# ├── 67890_another.json        (metadata)
+# ├── my-research-list.json     (inventory)
+# └── my-research.log           (failed items)
+```
+
+This creates a complete archive with:
+- All content types
+- Metadata for each item (descriptions, dates, sources)
+- Inventory file for easy reference
+- Failed download log for follow-up
 
 ## Dry-Run
 
