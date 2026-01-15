@@ -1,6 +1,8 @@
-# arena-chan-dl v2.0
+# arena-dl v2.0
 
 **Rebuilt for reliability** - A CLI tool for downloading and archiving images from [Are.na](https://are.na) channels.
+
+> A maintained fork of [tg-z/arena-chan-dl](https://github.com/tg-z/arena-chan-dl) with improved UX, global installation, and simplified workflow.
 
 ## Features
 
@@ -16,7 +18,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/tg-z/arena-chan-dl
+git clone https://github.com/strangesongs/arena-chan-dl
 cd arena-chan-dl
 
 # Install dependencies
@@ -26,38 +28,38 @@ npm install
 npm link
 ```
 
-Now you can use `arena-chan-dl` from any directory on your system!
+Now you can use `arena-dl` from any directory on your system!
 
 ## Usage
 
 ```bash
 # Basic usage - download to ./downloads
-arena-chan-dl get <channel-slug>
+arena-dl get <channel-slug>
 
 # Specify output directory
-arena-chan-dl get <channel-slug> /path/to/output
+arena-dl get <channel-slug> /path/to/output
 
 # Use full URL (slug will be extracted)
-arena-chan-dl get https://www.are.na/user/channel-slug
+arena-dl get https://www.are.na/user/channel-slug
 
 # Force re-download existing files
-arena-chan-dl get <channel-slug> --force
+arena-dl get <channel-slug> --force
 ```
 
 ## Examples
 
 ```bash
 # Download "frog" channel to current directory's downloads folder
-arena-chan-dl get frog
+arena-dl get frog
 
 # Download to specific directory
-arena-chan-dl get frog ~/Documents/arena-archive
+arena-dl get frog ~/Documents/arena-archive
 
 # Download with full URL
-arena-chan-dl get https://www.are.na/period-6wkfhxbqle8/we-take-care-of-each-other-xr-skwcd1ta
+arena-dl get https://www.are.na/period-6wkfhxbqle8/we-take-care-of-each-other-xr-skwcd1ta
 
 # Re-download everything (ignore existing files)
-arena-chan-dl get frog --force
+arena-dl get frog --force
 ```
 
 ## Output Structure

@@ -1,15 +1,15 @@
 {
-  "name": "arena-chan-dl",
+  "name": "arena-dl",
   "version": "2.0.0",
   "description": "are.na channel downloader cli - rebuilt for reliability",
   "main": "index.js",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tg-z/arena-chan-dl.git"
+    "url": "git+https://github.com/strangesongs/arena-chan-dl.git"
   },
-  "homepage": "https://github.com/tg-z/arena-chan-dl#readme",
-  "author": "tg-z",
+  "homepage": "https://github.com/strangesongs/arena-chan-dl#readme",
+  "author": "strangesongs",
   "private": false,
   "preferGlobal": true,
   "dependencies": {
@@ -21,7 +21,7 @@
     "yargs": "^17.7.2"
   },
   "bin": {
-    "arena-chan-dl": "index.js"
+    "arena-dl": "index.js"
   },
   "keywords": [
     "are.na",
