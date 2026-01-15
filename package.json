@@ -1,7 +1,7 @@
 {
   "name": "arena-dl",
   "version": "2.0.0",
-  "description": "are.na channel downloader cli - rebuilt for reliability",
+  "description": "are.na channel downloader cli",
   "main": "index.js",
   "license": "MIT",
   "repository": {

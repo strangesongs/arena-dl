@@ -10,7 +10,25 @@ const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 
 const PER_PAGE = 100;
-const CONCURRENT_DOWNLOADS = 5; // Reduced to be more polite to CDN
+const CONCURRENT_DOWNLOADS = 5;
+
+// Load config from ~/.arena-dlrc
+function loadConfig() {
+  const configPath = path.join(process.env.HOME, '.arena-dlrc');
+  try {
+    if (fs.existsSync(configPath)) {
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      // Expand ~ in paths
+      if (config.outputDir) {
+        config.outputDir = config.outputDir.replace(/^~/, process.env.HOME);
+      }
+      return config;
+    }
+  } catch (error) {
+    console.warn(chalk.yellow(`⚠️  Warning: Could not load config from ${configPath}`));
+  }
+  return {};
+}
 
 // Browser-like headers to avoid WAF blocks
 const BROWSER_HEADERS = {
@@ -28,7 +46,7 @@ class ArenaDownloader {
   constructor(slug, outputDir, options = {}) {
     this.slug = slug;
     this.outputDir = outputDir;
-    this.saveMetadata = false; // Metadata disabled by default
+    this.saveMetadata = false;
     this.skipExisting = options.skipExisting !== false;
     this.stats = {
       total: 0,
@@ -37,6 +55,21 @@ class ArenaDownloader {
       failed: 0,
       noImage: 0
     };
+    this.failedBlocks = [];
+    this.logPath = path.join(outputDir, `.arena-dl-${slug}.log`);
+  }
+
+  logFailure(blockId, title, error) {
+    this.failedBlocks.push({ blockId, title, error });
+  }
+
+  writefailedLog() {
+    if (this.failedBlocks.length > 0) {
+      const logContent = this.failedBlocks
+        .map(b => `${b.blockId} - ${b.title}: ${b.error}`)
+        .join('\n');
+      fs.writeFileSync(this.logPath, logContent);
+    }
   }
 
   async fetchChannelInfo() {
@@ -125,6 +158,7 @@ class ArenaDownloader {
       return { success: true, skipped: false };
     } catch (error) {
       this.stats.failed++;
+      this.logFailure(block.id, block.title, error.message);
       console.error(chalk.red(`\n  ✗ Could not download image ${block.id}: ${error.message}`));
       return { success: false, error: error.message };
     }
@@ -185,6 +219,8 @@ class ArenaDownloader {
 
       if (this.stats.failed > 0) {
         console.log(chalk.yellow('\n⚠️  Some downloads failed. Run the same command again to retry failed downloads.'));
+        console.log(chalk.gray(`Failed downloads logged to: ${this.logPath}`));
+        this.writefailedLog();
       }
 
     } catch (error) {
@@ -196,12 +232,13 @@ class ArenaDownloader {
 
 // CLI
 yargs(hideBin(process.argv))
-  .scriptName('arena-chan-dl')
+  .scriptName('arena-dl')
   .usage('$0 <command> [options]')
   .command(
     'get <slug> [dir]',
     'Download all images from an Are.na channel',
     (yargs) => {
+      const config = loadConfig();
       return yargs
         .positional('slug', {
           describe: 'Are.na channel name or full URL',
@@ -210,7 +247,7 @@ yargs(hideBin(process.argv))
         .positional('dir', {
           describe: 'Where to save downloaded images',
           type: 'string',
-          default: './downloads'
+          default: config.outputDir || './downloads'
         })
         .option('force', {
           describe: 'Re-download images that already exist',

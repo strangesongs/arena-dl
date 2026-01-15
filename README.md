@@ -1,97 +1,95 @@
-# arena-dl v2.0
+# arena-dl
 
-**Rebuilt for reliability** - A CLI tool for downloading and archiving images from [Are.na](https://are.na) channels.
+A CLI tool for downloading images from [Are.na](https://are.na) channels.
 
-> A maintained fork of [tg-z/arena-chan-dl](https://github.com/tg-z/arena-chan-dl) with improved UX, global installation, and simplified workflow.
+## Requirements
+
+- Node.js >= 14.0.0
+- npm
 
 ## Features
 
-✅ **Reliable downloads** - Browser-like headers bypass CDN blocks  
-✅ **Progress tracking** - Real-time progress with detailed statistics  
-✅ **Descriptive filenames** - Images saved with block ID and title  
-✅ **Resume capability** - Automatically skips already downloaded files  
-✅ **Error recovery** - Continues on failures, shows summary at end  
-✅ **Rate limiting** - Polite delays between requests  
-✅ **Global installation** - Install once, run from anywhere  
+- Browser-like headers bypass CDN blocks
+- Progress tracking with stats
+- Resume on re-run (skips existing files)
+- Rate limiting
+- Full URL support
 
 ## Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/strangesongs/arena-chan-dl
 cd arena-chan-dl
-
-# Install dependencies
 npm install
-
-# Install globally (so you can run from anywhere)
 npm link
 ```
-
-Now you can use `arena-dl` from any directory on your system!
 
 ## Usage
 
 ```bash
-# Basic usage - download to ./downloads
 arena-dl get <channel-slug>
-
-# Specify output directory
 arena-dl get <channel-slug> /path/to/output
-
-# Use full URL (slug will be extracted)
 arena-dl get https://www.are.na/user/channel-slug
-
-# Force re-download existing files
 arena-dl get <channel-slug> --force
 ```
 
 ## Examples
 
 ```bash
-# Download "frog" channel to current directory's downloads folder
 arena-dl get frog
-
-# Download to specific directory
 arena-dl get frog ~/Documents/arena-archive
-
-# Download with full URL
 arena-dl get https://www.are.na/period-6wkfhxbqle8/we-take-care-of-each-other-xr-skwcd1ta
-
-# Re-download everything (ignore existing files)
 arena-dl get frog --force
 ```
 
-## Output Structure
+## Output
 
 ```
-downloads/
-└── channel-slug/
-    ├── 12345_image-title.jpg
-    ├── 67890_another-image.png
-    └── ...
+downloads/channel-slug/
+├── 12345_image-title.jpg
+├── 67890_another-image.png
+└── ...
 ```
 
-Image files are named with their block ID and title for easy identification.
+## What's New
 
-## What Changed in v2.0
+- Fixed yargs and chalk compatibility
+- Added browser headers to bypass CDN blocks
+- Modern async/await, proper error handling
+- Real-time progress tracking
+- Resume capability (skip existing files)
+- Rate limiting to be nice to CDN
+- File size validation
+- Full URL support
+- Global CLI installation
 
-- ✅ Fixed yargs integration (works with modern versions)
-- ✅ Fixed chalk compatibility (v4 instead of v5 ESM)
-- ✅ Added browser headers to bypass CloudFront WAF
-- ✅ Modern async/await (no more promise chains)
-- ✅ Proper error handling and recovery
-- ✅ Real-time progress tracking
-- ✅ Resume capability (skip existing files)
-- ✅ Rate limiting to be CDN-friendly
-- ✅ File size validation (detects empty downloads)
-- ✅ Support for full URL input
+## Error Handling
 
-## License
+The tool handles common issues gracefully:
 
-MIT
+- **Invalid channel**: Error message tells you the channel name couldn't be found
+- **Network timeout**: Retryable errors are logged; re-run the same command to continue
+- **Partial downloads**: Files that failed to download fully are logged in `.arena-dl/failed.log`
+- **Rate limiting**: Built-in delays prevent CDN blocks; failed downloads can be retried
+
+Re-running the same command will skip existing files and retry failures.
+
+## Configuration
+
+Create `~/.arena-dlrc` to set defaults:
+
+```json
+{
+  "outputDir": "~/Downloads/arena",
+  "concurrent": 5,
+  "timeout": 30000
+}
+```
+
+All values are optional. Command-line arguments override config file settings.
 
 ## Credits
 
-Rebuilt from [tg-z/arena-chan-dl](https://github.com/tg-z/arena-chan-dl)  
-Original fork of [aredotna/download-arena-channel](https://github.com/aredotna/download-arena-channel)
+Inspired by [aredotna/download-arena-channel](https://github.com/aredotna/download-arena-channel) and [tg-z/arena-chan-dl](https://github.com/tg-z/arena-chan-dl).
+
+MIT License
