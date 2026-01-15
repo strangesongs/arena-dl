@@ -10,10 +10,16 @@ A CLI tool for downloading images from [Are.na](https://are.na) channels.
 ## Features
 
 - Browser-like headers bypass CDN blocks
-- Progress tracking with stats
+- Progress tracking with speed and ETA
 - Resume on re-run (skips existing files)
 - Rate limiting
 - Full URL support
+- Interactive mode
+- Watch mode for periodic updates
+- Export to CSV or JSON
+- Dry-run preview
+- Config file support
+- Failed download logging
 
 ## Installation
 
@@ -27,19 +33,42 @@ npm link
 ## Usage
 
 ```bash
-arena-dl get <channel-slug>
-arena-dl get <channel-slug> /path/to/output
-arena-dl get https://www.are.na/user/channel-slug
-arena-dl get <channel-slug> --force
+# Simplest: just the channel name
+arena-dl architecture-portfolio
+
+# Specify output directory
+arena-dl design-inspiration ~/archives
+
+# Use full Are.na URL
+arena-dl https://www.are.na/user/channel-slug
+
+# Re-download everything
+arena-dl research --force
+
+# Preview what would download
+arena-dl gallery --dry-run
+
+# Check for updates every 30 minutes
+arena-dl inspiration --watch 30
+
+# Export list as JSON or CSV
+arena-dl collection --format json
+arena-dl collection --format csv
+
+# Interactive mode (no args)
+arena-dl
 ```
 
 ## Examples
 
 ```bash
-arena-dl get frog
-arena-dl get frog ~/Documents/arena-archive
-arena-dl get https://www.are.na/period-6wkfhxbqle8/we-take-care-of-each-other-xr-skwcd1ta
-arena-dl get frog --force
+arena-dl architecture-portfolio
+arena-dl design-inspiration ~/Documents/arena-archive
+arena-dl https://www.are.na/period-6wkfhxbqle8/we-take-care-of-each-other-xr-skwcd1ta
+arena-dl research --force
+arena-dl gallery --dry-run
+arena-dl inspiration --watch 30
+arena-dl collection --format json
 ```
 
 ## Output
@@ -87,6 +116,58 @@ Create `~/.arena-dlrc` to set defaults:
 ```
 
 All values are optional. Command-line arguments override config file settings.
+
+## Watch Mode
+
+Continuously check a channel for new content:
+
+```bash
+arena-dl inspiration --watch 30
+```
+
+Updates every 30 minutes. Useful for archiving channels that get regularly updated.
+
+## Export
+
+Save a list of downloaded images:
+
+```bash
+# JSON format
+arena-dl collection --format json
+# Creates: downloads/collection/collection-list.json
+
+# CSV format
+arena-dl collection --format csv
+# Creates: downloads/collection/collection-list.csv
+```
+
+## Dry-Run
+
+Preview what would be downloaded without actually downloading:
+
+```bash
+arena-dl gallery --dry-run
+```
+
+## Interactive Mode
+
+Run without arguments for interactive prompts:
+
+```bash
+arena-dl
+? Channel name or URL: architecture-portfolio
+? Output directory (./downloads): 
+```
+
+## What's New
+
+- Simplified command: `arena-dl channel-name` (no "get")
+- Interactive mode for beginners
+- Watch mode for continuous archiving
+- Export to JSON or CSV
+- Dry-run preview mode
+- Improved progress with speed and ETA
+- Better error messages with doc links
 
 ## Credits
 
